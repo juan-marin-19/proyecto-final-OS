@@ -64,18 +64,31 @@ Registros guardados en un cambio de contexto:
 ##### enum procstate
 
 Estados posibles:
-UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE.
+
+* UNUSED: Entrada de tabla no usada
+* EMBRYO: Proceso en creación
+* SLEEPING: Proceso dormido
+* RUNNABLE: Proceso listo para correr
+* RUNNING: Proceso en ejecución
+* ZOMBIE: Proceso terminado, esperando recolección
 
 ##### struct proc
 
-PCB del proceso, contiene:
+PCB (Process Control Block) del proceso, contiene:
 
-* `sz`, `pgdir`, `kstack`
-* `state`, `pid`, `parent`
-* `tf`, `context`
-* `chan`, `killed`
-* `ofile[]`, `cwd`
-* `name`
+* uint sz : Tamaño total de la memoria del proceso, en bytes
+* pde_t\* pgdir: Puntero a la tabla de páginas del proceso
+* char *kstack: Direccion base de la pila del kernel de este proceso
+* enum procstate state: Estado actual del proceso.
+* ini pid:  PID único del proceso
+* struct proc *parent: puntero al proceso padre
+* struct trapframe *tf:  trapframe guardodo en la pila del kernel
+* struct context \*context: puntero al contexto de kernel guardado, esencial para el cambio de contexto.
+* void \*chan:  recurso esperado cuando el proceso está en SLEEPING.
+* int killed: Indica si se hizo kill() al proceso
+* struct file \*ofile[NOFILE]: Array de archivos abiertos
+* struct inode \*cwd: Directorio del trabajo actual
+* char name[16]: Nombre del proceso.
 
 #### Implementación del Scheduler
 
@@ -107,20 +120,18 @@ void scheduler(void) {
 }
 ```
 
-**Descripción del funcionamiento:**
+##### Descripción del funcionamiento
 
-* Habilita interrupciones (`sti()`).
+* Habilita interrupciones (sti()).
 * Recorre la tabla de procesos en orden fijo.
-* Selecciona el primer proceso en estado `RUNNABLE`.
+* Selecciona el primer proceso en estado RUNNABLE.
 * Lo ejecuta hasta que ocurra:
 
   * interrupción de reloj,
-  * `yield()`,
-  * `sleep()`,
-  * `exit()`.
+  * yield(),
+  * sleep(),
+  * exit().
 * Luego retorna al scheduler y continúa desde el siguiente proceso.
-
----
 
 ## 1.2 Scheduler Modificado
 
@@ -134,7 +145,7 @@ void scheduler(void) {
 
 El gestor de memoria de xv6 se encuentra en `kalloc.c` y se basa en una **lista enlazada de páginas libres** (free list). Cada página tiene tamaño **4096 bytes**.
 
-### Estructura global `kmem`
+### Estructura de datos global (kalloc.c)
 
 ```c
 struct {
@@ -144,6 +155,11 @@ struct {
 } kmem;
 ```
 
+>Esta estructura mantiene:
+>* lock : Spinlock para sincronización en sistemas multiprocesador.
+>* use_lock freelist : Flag que indica si debe usar el lock.
+>* freelist: Puntero al inicio de la lista de páginas libre.
+
 ### Nodo de la lista
 
 ```c
@@ -152,13 +168,15 @@ struct run {
 };
 ```
 
+>Cada página física libre (4096 bytes) almacena en sus primeros bytes un puntero al siguiente nodo, formando una lista simplemente enlazada
+
 ### Funciones principales
 
-#### `kinit1()` y `kinit2()`
+#### kinit1() y kinit2()
 
-Inicializan el sistema de memoria en dos fases durante el boot.
+Inicializan el sistema de memoria en dos fases durante el boot, kinit1() inicializa memoria suficiente para arrancar (4MB), mientras que kinit2() inicializa el resto de la memoria física disponible.
 
-#### `freerange()`
+#### freerange()
 
 ```c
 void freerange(void *vstart, void *vend) {
@@ -169,7 +187,9 @@ void freerange(void *vstart, void *vend) {
 }
 ```
 
-#### `kfree()`
+Divide un rango dado en páginas, marcando un rango continuo de memoria como libre y las agrega a las listas libres mediante kfree().
+
+#### kfree()
 
 ```c
 void kfree(char *v) {
@@ -192,14 +212,14 @@ void kfree(char *v) {
 }
 ```
 
+Libera una página física, validando la dirección, llenándola con 1s para detectar usos indebidos y agregándola al inicio de la lista de páginas libres.
+
 ### Limitaciones del sistema original
 
 * No permite tamaños variables (solo páginas completas).
 * Alta fragmentación interna.
 * No realiza coalescencia.
-* No hay política de asignación más allá de “pop de la freelist”.
-
----
+* No hay política de asignación más allá de “pop de la freelist”, es decir, no reduce la fragmentación ni optimiza el uso de memoria.
 
 ## 2.2 Gestor de Memoria Modificado
 
@@ -211,9 +231,114 @@ void kfree(char *v) {
 
 ### 3.1 Scripts de Pruebas
 
-> **[Contenido pendiente: aquí deben incluirse los scripts utilizados para probar el scheduler modificado y el gestor de memoria modificado, tanto programas de usuario como scripts del host.]**
+Para realizar las pruebas de rendimiento y funcionalidad del sistema operativo modificado, se han desarrollado, añadido al sistema y ejecutado varios scripts de prueba. A continuación se describen los scripts implementados:
 
----
+#### scheddif
+
+```c
+#include "types.h"
+#include "stat.h"
+#include "user.h"
+
+#define N (3)
+
+static void cpu_hog(int id) {
+  volatile uint x = 0;
+  for (int i = 0; i < 150000000; i++) {
+    x += i;
+    if ((i % 30000000) == 0)
+      printf(1, "hog %d tick %d\n", id, i/30000000);
+  }
+  printf(1, "hog %d done (%d)\n", id, x);
+}
+
+static void interactive(int id) {
+  for (int i = 0; i < 8; i++) {
+    printf(1, "io  %d burst %d\n", id, i);
+    sleep(20);          // simula E/S corta
+  }
+  printf(1, "io  %d done\n", id);
+}
+
+static void yieldy(int id) {
+  for (int i = 0; i < 12; i++) {
+    printf(1, "yld %d step %d\n", id, i);
+    yield();            // cede CPU rápido
+  }
+  printf(1, "yld %d done\n", id);
+}
+
+int
+main(void)
+{
+  int pid;
+
+  // Crea tres perfiles: CPU-bound, interactivo, yieldy
+  if ((pid = fork()) == 0) { cpu_hog(1); exit(); }
+  if ((pid = fork()) == 0) { interactive(2); exit(); }
+  if ((pid = fork()) == 0) { yieldy(3); exit(); }
+
+  // Padre espera
+  while (wait() >= 0) {}
+  printf(1, "scheddiff finished\n");
+  exit();
+}
+```
+
+Este script crea tres tipos de procesos para evaluar el scheduler:
+
+* CPU-bound: Consume CPU intensivamente.
+* Interactivo: Simula procesos que alternan entre CPU y E/S.
+* Yieldy: Cede la CPU frecuentemente.
+
+Espera a que todos los procesos terminen y reporta la finalización.
+Este script permite observar cómo el scheduler maneja diferentes cargas de trabajo y evaluar su rendimiento.
+
+#### memdif
+
+```c
+#include "types.h"
+#include "stat.h"
+#include "user.h"
+
+#define BIG (64*1024*1024)  // 64 MiB
+
+int
+main(void)
+{
+  int sz0 = (int)sbrk(0);
+  printf(1, "memdiff: brk inicial %d\n", sz0);
+
+  char *p = sbrk(BIG);
+  if (p == (char*)-1) {
+    printf(1, "memdiff: sbrk(%d) FALLÓ (asignación eager)\n", BIG);
+    exit();
+  }
+  printf(1, "memdiff: sbrk(%d) OK, brk ahora %d\n", BIG, (int)sbrk(0));
+
+  // Tocar solo las dos primeras páginas
+  p[0] = 'A';
+  p[4096] = 'B';
+  printf(1, "memdiff: toque 2 páginas, no deberíamos morir si hay lazy alloc\n");
+
+  // Intentar liberar
+  if (sbrk(-BIG) == (char*)-1)
+    printf(1, "memdiff: free falló\n");
+  else
+    printf(1, "memdiff: brk tras liberar %d\n", (int)sbrk(0));
+
+  printf(1, "memdiff: done\n");
+  exit();
+}
+```
+
+Este script prueba la asignación y liberación de memoria dinámica:
+
+* Solicita 64 MiB de memoria usando sbrk().
+* Toca solo las dos primeras páginas para verificar la asignación perezosa (lazy allocation).
+* Intenta liberar la memoria asignada y verifica el estado del puntero de programa (brk).
+
+Permite evaluar el comportamiento del gestor de memoria modificado en términos de asignación y liberación eficiente.
 
 ### 3.2 Resultados
 
