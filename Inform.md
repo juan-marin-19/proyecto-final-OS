@@ -690,7 +690,7 @@ Este script permite observar cómo el scheduler maneja diferentes cargas de trab
 #include "stat.h"
 #include "user.h"
 
-#define BIG (64*1024*1024)  // 64 MiB
+#define BIG (1024*1024*1024)  // 1 GiB
 
 int
 main(void)
@@ -807,17 +807,16 @@ scheddiff finished
 
 #### memdif
 
-Los resultados del script memdif confirmaron la correcta implementación de lazy allocation en el gestor de memoria. Al solicitar 64 MiB de memoria, el sistema no asignó físicamente toda la memoria solicitada hasta que se accedió a las páginas específicas. Solo las dos primeras páginas fueron tocadas, y el sistema respondió correctamente sin errores, demostrando que la asignación perezosa funcionó como se esperaba.
+Los resultados del script memdif evidencian la correcta implementación de lazy allocation en el gestor de memoria. En la versión original, la llamada a sbrk() para asignar 1 GiB de memoria falló debido a la falta de memoria física disponible. En contraste, en la versión modificada, la llamada a sbrk() fue exitosa, y solo las dos primeras páginas fueron tocadas, demostrando que la memoria se asignó bajo demanda sin agotar los recursos del sistema.
 
 ##### Resultados en la versión original
 
 ```bash
 $ memdif
 memdiff: brk inicial 12288
-memdiff: sbrk(67108864) OK, brk ahora 67121152
-memdiff: toque 2 páginas, no deberíamos morir si hay lazy alloc
-memdiff: brk tras liberar 12288
-memdiff: done
+allocuvm out of memory
+memdiff: sbrk(1073741824) FALLÓ (asignación eager)
+$
 ```
 
 ##### Resultados en la versión modificada
@@ -825,7 +824,7 @@ memdiff: done
 ```bash
 $ memdif
 memdiff: brk inicial 12288
-memdiff: sbrk(67108864) OK, brk ahora 67121152
+memdiff: sbrk(1073741824) OK, brk ahora 1073754112
 memdiff: toque 2 páginas, no deberíamos morir si hay lazy alloc
 memdiff: brk tras liberar 12288
 memdiff: done

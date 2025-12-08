@@ -2,7 +2,7 @@
 #include "stat.h"
 #include "user.h"
 
-#define BIG (64*1024*1024)  // 64 MiB
+#define BIG (1024*1024*1024)  // 512 MiB
 
 int
 main(void)
