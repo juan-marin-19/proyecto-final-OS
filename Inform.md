@@ -7,15 +7,15 @@ Escuela de Ingeniería de Sistemas y Computación
 <img src="Images/LogoSimboloUV.png" alt="LogoSimbolo Universidad Del Valle" width="100" height="120">
 </center>
 <center>
-Profesor Juan Amado Peña Torres
+Profesor Jefferson Amado Peña Torres
 </center>
 Autores:
 
 * 2422117 Juan Marin Orozco
 * Juan David Guar
-* 202418564 Isabella Bermúdez
+* 2418564 Isabella Bermúdez
 * 2435998 Brandon Alexis Franco Flor
-* 202416541 González Rosero Andrés Gerardo
+* 2416541 González Rosero Andrés Gerardo
 
 <center>
 Diciembre de 2025
