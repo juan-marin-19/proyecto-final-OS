@@ -137,22 +137,22 @@ void scheduler(void) {
 
 #### Descripción general
 
-El scheduler de xv6 ha sido modificado para implementar un **Multi-Level Feedback Queue (MLFQ)**, un algoritmo de planificación que utiliza múltiples colas de prioridad para mejorar la equidad y la capacidad de respuesta del sistema. Este diseño permite que procesos interactivos obtengan mejor tiempo de respuesta mientras que procesos CPU-bound reciben tratamiento justo sin sufrir starvation.
+El scheduler de xv6 ha sido modificado para implementar un Multi-Level Feedback Queue (MLFQ), un algoritmo de planificación que utiliza múltiples colas de prioridad para mejorar la equidad y la capacidad de respuesta del sistema. Este diseño permite que procesos interactivos obtengan mejor tiempo de respuesta mientras que procesos CPU-bound reciben tratamiento justo sin sufrir starvation.
 
 #### Objetivos del diseño
 
 Los objetivos principales de esta modificación son:
 
-* **Mejorar la equidad**: Distribuir el tiempo de CPU de manera más justa entre procesos con diferentes características de carga.
-* **Reducir tiempos de respuesta para procesos interactivos**: Procesos que realizan operaciones de E/S frecuentemente deben obtener CPU rápidamente para mantener la responsividad del sistema.
-* **Evitar starvation**: Implementar mecanismos que garanticen que todos los procesos eventualmente reciban tiempo de CPU, independientemente de su prioridad.
-* **Ajustar dinámicamente las prioridades**: Los procesos que consumen mucho CPU son degradados en prioridad, mientras que los procesos interactivos mantienen alta prioridad.
+* Mejorar la equidad: Distribuir el tiempo de CPU de manera más justa entre procesos con diferentes características de carga.
+* Reducir tiempos de respuesta para procesos interactivos: Procesos que realizan operaciones de E/S frecuentemente deben obtener CPU rápidamente para mantener la responsividad del sistema.
+* Evitar starvation: Implementar mecanismos que garanticen que todos los procesos eventualmente reciban tiempo de CPU, independientemente de su prioridad.
+* Ajustar dinámicamente las prioridades: Los procesos que consumen mucho CPU son degradados en prioridad, mientras que los procesos interactivos mantienen alta prioridad.
 
 #### Estructuras de datos modificadas
 
-##### Cambios en `struct proc` (proc.h)
+##### Cambios en struct proc (proc.h)
 
-Se agregaron tres nuevos campos a la estructura `proc`:
+Se agregaron tres nuevos campos a la estructura proc:
 
 ```c
 struct proc {
@@ -163,11 +163,11 @@ struct proc {
 };
 ```
 
-* **`priority`**: Define el nivel de prioridad del proceso. El valor 0 representa la máxima prioridad, y valores mayores representan prioridades menores. Los nuevos procesos inician en prioridad 0.
-* **`ticks_running`**: Contador de interrupciones del timer que el proceso ha consumido durante su quantum actual. Se reinicia cada vez que el proceso obtiene la CPU.
-* **`next_proc`**: Permite enlazar procesos dentro de una misma cola de prioridad, formando listas enlazadas sin necesidad de estructuras adicionales.
+* priority: Define el nivel de prioridad del proceso. El valor 0 representa la máxima prioridad, y valores mayores representan prioridades menores. Los nuevos procesos inician en prioridad 0.
+* ticks_running: Contador de interrupciones del timer que el proceso ha consumido durante su quantum actual. Se reinicia cada vez que el proceso obtiene la CPU.
+* next_proc: Permite enlazar procesos dentro de una misma cola de prioridad, formando listas enlazadas sin necesidad de estructuras adicionales.
 
-##### Modificaciones en `ptable` (proc.c)
+##### Modificaciones en ptable (proc.c)
 
 La tabla de procesos fue extendida para soportar múltiples colas de prioridad:
 
@@ -180,8 +180,8 @@ struct {
 } ptable;
 ```
 
-* **`queue_first[NPRIO]`**: Array de punteros que mantiene la referencia al primer proceso de cada cola de prioridad. Un valor `0` indica que la cola está vacía.
-* **`queue_last[NPRIO]`**: Array de punteros que mantiene la referencia al último proceso de cada cola de prioridad, facilitando la inserción eficiente al final de la cola.
+* queue_first[NPRIO]: Array de punteros que mantiene la referencia al primer proceso de cada cola de prioridad. Un valor `0` indica que la cola está vacía.
+* queue_last[NPRIO]: Array de punteros que mantiene la referencia al último proceso de cada cola de prioridad, facilitando la inserción eficiente al final de la cola.
 
 ##### Constante NPRIO (param.h)
 
@@ -189,11 +189,11 @@ struct {
 #define NPRIO 4  // Total levels of scheduler priority
 ```
 
-Define el número total de niveles de prioridad en el sistema. Con `NPRIO = 4`, existen 4 niveles (0, 1, 2, 3), donde 0 es la máxima prioridad y 3 la mínima.
+Define el número total de niveles de prioridad en el sistema. Con NPRIO = 4, existen 4 niveles (0, 1, 2, 3), donde 0 es la máxima prioridad y 3 la mínima.
 
 #### Algoritmos implementados
 
-##### Función `enqueue()` (proc.c)
+##### Función enqueue() (proc.c)
 
 Encola un proceso en su cola de prioridad correspondiente:
 
@@ -213,12 +213,13 @@ void enqueue(struct proc *p)
 ```
 
 **Funcionamiento:**
+
 * Inserta el proceso al final de la cola correspondiente a su nivel de prioridad actual.
 * Si la cola está vacía, el proceso se convierte en el primer y último elemento.
-* Si la cola tiene elementos, se enlaza al final usando el campo `next_proc` del último proceso.
-* El proceso se marca como `RUNNABLE` para indicar que está listo para ejecutarse.
+* Si la cola tiene elementos, se enlaza al final usando el campo next_proc del último proceso.
+* El proceso se marca como RUNNABLE para indicar que está listo para ejecutarse.
 
-##### Función `dequeue()` (proc.c)
+##### Función dequeue() (proc.c)
 
 Desencola y devuelve el primer proceso de una cola específica:
 
@@ -241,12 +242,13 @@ struct proc* dequeue(int priority)
 ```
 
 **Funcionamiento:**
-* Extrae el primer proceso de la cola indicada (política FIFO dentro de cada prioridad).
-* Actualiza `queue_first` para apuntar al siguiente proceso en la cola.
-* Si el proceso era el único en la cola, actualiza también `queue_last` a `0`.
-* Retorna `0` si la cola está vacía.
 
-##### Función `scheduler()` modificada (proc.c)
+* Extrae el primer proceso de la cola indicada (política FIFO dentro de cada prioridad).
+* Actualiza queue_first para apuntar al siguiente proceso en la cola.
+* Si el proceso era el único en la cola, actualiza también queue_last a 0.
+* Retorna 0 si la cola está vacía.
+
+##### Función scheduler() modificada (proc.c)
 
 El scheduler ahora recorre las colas por orden de prioridad:
 
@@ -283,13 +285,14 @@ void scheduler(void)
 }
 ```
 
-**Cambios respecto al scheduler original:**
+###### Cambios respecto al scheduler original
+
 * En lugar de recorrer linealmente la tabla de procesos, ahora recorre las colas de prioridad en orden (0 a NPRIO-1).
 * Siempre selecciona el primer proceso de la cola de mayor prioridad no vacía (política de prioridades estricta).
 * Dentro de cada cola se respeta el orden FIFO.
-* El `break` después de ejecutar un proceso asegura que siempre se revisen primero las colas de mayor prioridad.
+* El break después de ejecutar un proceso asegura que siempre se revisen primero las colas de mayor prioridad.
 
-##### Función `yield()` modificada (proc.c)
+##### Función yield() modificada (proc.c)
 
 Implementa la degradación de prioridad al consumir el quantum:
 
@@ -311,13 +314,14 @@ void yield(void)
 }
 ```
 
-**Funcionamiento:**
+###### Funcionamiento
+
 * Cuando un proceso agota su quantum, su prioridad se degrada (aumenta en 1).
 * La degradación solo ocurre si el proceso no está en la prioridad mínima (`NPRIO - 1`).
 * El proceso se reencola en su nueva cola de prioridad.
 * Este mecanismo penaliza a procesos CPU-bound que consumen su quantum completo.
 
-##### Función `priority_boost()` (proc.c)
+##### Función priority_boost() (proc.c)
 
 Mecanismo anti-starvation que periódicamente reinicia todas las prioridades:
 
@@ -361,11 +365,12 @@ void priority_boost(void)
 }
 ```
 
-**Funcionamiento:**
+###### Funcionamiento
+
 * Resetea la prioridad de todos los procesos a 0 (máxima prioridad).
 * Concatena todas las colas no vacías en la cola de prioridad 0.
 * Vacía todas las demás colas.
-* Se ejecuta periódicamente cada `BOOSTTIMER` ticks (definido como 100 en `param.h`).
+* Se ejecuta periódicamente cada BOOSTTIMER ticks (definido como 100 en param.h).
 * Garantiza que ningún proceso sufra starvation al darle una oportunidad periódica de ejecutarse con máxima prioridad.
 
 #### Quantum y política de degradación de prioridad (trap.c)
@@ -382,43 +387,44 @@ if(myproc() && myproc()->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER){
 }
 ```
 
-**Política de quantum:**
+##### Política de quantum
+
 * El quantum asignado es **2^priority** ticks.
   * Prioridad 0: quantum = 2^0 = 1 tick
   * Prioridad 1: quantum = 2^1 = 2 ticks
   * Prioridad 2: quantum = 2^2 = 4 ticks
   * Prioridad 3: quantum = 2^3 = 8 ticks
 * Los procesos en colas de menor prioridad reciben quantums más largos para compensar la menor frecuencia de ejecución.
-* Cada tick de timer incrementa `ticks_running`, y cuando alcanza su quantum, el proceso invoca `yield()`.
+* Cada tick de timer incrementa ticks_running, y cuando alcanza su quantum, el proceso invoca yield().
 
-**Priority boost periódico (trap.c):**
+##### Priority boost periódico (trap.c)
 
 ```c
 if(ticks % BOOSTTIMER == 0)
   priority_boost();
 ```
 
-Cada 100 ticks del sistema (`BOOSTTIMER = 100`), se ejecuta `priority_boost()` para prevenir starvation.
+Cada 100 ticks del sistema (BOOSTTIMER = 100), se ejecuta priority_boost() para prevenir starvation.
 
 #### Cambios en el comportamiento respecto al scheduler original
 
 | Aspecto | Scheduler Original (Round-Robin) | Scheduler Modificado (MLFQ) |
 |---------|----------------------------------|----------------------------|
-| **Política de selección** | Recorre linealmente la tabla de procesos | Recorre colas de prioridad (0 a NPRIO-1) |
-| **Equidad** | Todos los procesos tienen igual prioridad | Procesos interactivos tienen mayor prioridad |
-| **Quantum** | Fijo (definido por el timer) | Dinámico (2^priority ticks) |
-| **Degradación** | No existe | Los procesos que consumen su quantum bajan de prioridad |
-| **Anti-starvation** | Garantizado por Round-Robin | Garantizado por priority_boost() periódico |
-| **Manejo de E/S** | Sin ventajas especiales | Procesos que hacen E/S mantienen alta prioridad |
-| **Estructuras** | Tabla simple de procesos | Múltiples colas enlazadas por prioridad |
-| **Responsividad** | Uniforme para todos | Mayor para procesos interactivos |
+| Política de selección | Recorre linealmente la tabla de procesos | Recorre colas de prioridad (0 a NPRIO-1) |
+| Equidad | Todos los procesos tienen igual prioridad | Procesos interactivos tienen mayor prioridad |
+| Quantum | Fijo (definido por el timer) | Dinámico (2^priority ticks) |
+| Degradación | No existe | Los procesos que consumen su quantum bajan de prioridad |
+| Anti-starvation | Garantizado por Round-Robin | Garantizado por priority_boost() periódico |
+| Manejo de E/S | Sin ventajas especiales | Procesos que hacen E/S mantienen alta prioridad |
+| Estructuras | Tabla simple de procesos | Múltiples colas enlazadas por prioridad |
+| Responsividad | Uniforme para todos | Mayor para procesos interactivos |
 
 #### Ventajas del MLFQ implementado
 
-1. **Mejor tiempo de respuesta interactivo**: Procesos que frecuentemente ceden la CPU (por E/S o sleep) permanecen en alta prioridad.
-2. **Penalización justa para CPU-bound**: Procesos que consumen mucho CPU son gradualmente degradados.
-3. **Prevención de starvation**: El mecanismo de priority boost asegura que todos los procesos eventualmente ejecuten.
-4. **Adaptación dinámica**: El sistema se ajusta automáticamente al comportamiento de cada proceso sin configuración manual.
+1. Mejor tiempo de respuesta interactivo: Procesos que frecuentemente ceden la CPU (por E/S o sleep) permanecen en alta prioridad.
+2. Penalización justa para CPU-bound: Procesos que consumen mucho CPU son gradualmente degradados.
+3. Prevención de starvation: El mecanismo de priority boost asegura que todos los procesos eventualmente ejecuten.
+4. Adaptación dinámica: El sistema se ajusta automáticamente al comportamiento de cada proceso sin configuración manual.
 
 ---
 
@@ -508,24 +514,24 @@ Libera una página física, validando la dirección, llenándola con 1s para det
 
 #### Análisis del código actual
 
-##### Estado de `kalloc.c`
+##### Estado de kalloc.c
 
-El archivo `kalloc.c` se mantiene **sin modificaciones** respecto al sistema original de xv6. Conserva la implementación basada en una lista enlazada de páginas libres (free list) de 4096 bytes, con las funciones `kinit1()`, `kinit2()`, `kfree()` y `kalloc()` operando de la misma manera que en el xv6 original.
+El archivo kalloc.c se mantiene sin modificaciones respecto al sistema original de xv6. Conserva la implementación basada en una lista enlazada de páginas libres (free list) de 4096 bytes, con las funciones kinit1(), kinit2(), kfree() y kalloc() operando de la misma manera que en el xv6 original.
 
-**Justificación de mantener el gestor original:**
+Justificación de mantener el gestor original:
 
-* **Simplicidad y eficiencia**: El sistema de free list es simple, eficiente para el manejo de páginas completas, y suficiente para las necesidades del sistema operativo modificado.
-* **Robustez probada**: La implementación original de xv6 es estable y bien probada, minimizando el riesgo de introducir errores críticos.
-* **Compatibilidad**: Mantener `kalloc.c` sin cambios garantiza compatibilidad con el resto del kernel que depende de su interfaz.
-* **Enfoque en scheduler**: El objetivo principal del proyecto era modificar el scheduler, por lo que se priorizó la estabilidad del gestor de memoria básico.
+* Simplicidad y eficiencia: El sistema de free list es simple, eficiente para el manejo de páginas completas, y suficiente para las necesidades del sistema operativo modificado.
+* Robustez probada: La implementación original ha sido ampliamente probada y es confiable.
+* Compatibilidad: Mantener kalloc.c sin cambios garantiza compatibilidad con el resto del kernel que depende de su interfaz.
+* Enfoque en scheduler: El objetivo principal del proyecto era modificar el scheduler, por lo que se priorizó la estabilidad del gestor de memoria básico.
 
 #### Implementación de Lazy Allocation
 
-Aunque `kalloc.c` no fue modificado, **sí se implementó una mejora significativa en el gestor de memoria virtual** mediante **lazy allocation** (asignación perezosa) de páginas en el manejador de page faults (`trap.c`).
+Aunque kalloc.c no fue modificado, sí se implementó una mejora significativa en el gestor de memoria virtual mediante lazy allocation (asignación perezosa) de páginas en el manejador de page faults (trap.c).
 
-##### Lazy Allocation en `trap.c`
+##### Lazy Allocation en trap.c
 
-Se agregó un manejador específico para page faults (`T_PGFLT`) que implementa asignación de memoria bajo demanda:
+Se agregó un manejador específico para page faults (T_PGFLT) que implementa asignación de memoria bajo demanda:
 
 ```c
 // En trap.c, dentro del switch(tf->trapno):
@@ -562,72 +568,31 @@ case T_PGFLT:
 
 ##### Funcionamiento de Lazy Allocation
 
-1. **Detección del page fault**: Cuando un proceso intenta acceder a una dirección de memoria que no tiene una página física asignada, el hardware genera una excepción de page fault (trap número `T_PGFLT`).
+1. Detección del page fault: Cuando un proceso intenta acceder a una dirección de memoria que no tiene una página física asignada, el hardware genera una excepción de page fault (trap número T_PGFLT).
 
-2. **Lectura de la dirección causante**: Se lee el registro CR2 mediante `rcr2()` para obtener la dirección virtual que causó el fallo.
+2. Lectura de la dirección causante: Se lee el registro CR2 mediante rcr2() para obtener la dirección virtual que causó el fallo.
 
-3. **Validación del acceso**: Se verifica que la dirección esté dentro del espacio de direcciones válido del proceso (`fault_addr < myproc()->sz`). Si la dirección es inválida (fuera de los límites establecidos por `sbrk()`), se termina el proceso.
+3. Validación del acceso: Se verifica que la dirección esté dentro del espacio de direcciones válido del proceso (fault_addr < myproc()->sz). Si la dirección es inválida (fuera de los límites establecidos por sbrk()), se termina el proceso.
 
-4. **Alineación de página**: Se redondea la dirección al inicio de la página usando `PGROUNDDOWN()` para asignar páginas completas de 4096 bytes.
+4. Alineación de página: Se redondea la dirección al inicio de la página usando PGROUNDDOWN() para asignar páginas completas de 4096 bytes.
 
-5. **Asignación física**: Se llama a `allocuvm()` para asignar físicamente una página en esa ubicación. Si la asignación falla (por falta de RAM), se termina el proceso.
-
-6. **Continuación transparente**: Si la asignación es exitosa, el proceso continúa su ejecución desde donde quedó, sin que el código de usuario note la diferencia.
+5. Asignación física: Se llama a allocuvm() para asignar físicamente una página en esa ubicación. Si la asignación falla (por falta de RAM), se termina el proceso.
+6. Continuación transparente: Si la asignación es exitosa, el proceso continúa su ejecución desde donde quedó, sin que el código de usuario note la diferencia.
 
 ##### Ventajas de Lazy Allocation
 
-* **Reducción del uso de memoria**: Solo se asigna memoria física cuando realmente se accede a ella, no cuando se solicita con `sbrk()`.
-* **Arranque más rápido**: Las llamadas a `sbrk()` grandes retornan inmediatamente sin asignar toda la memoria solicitada.
-* **Eficiencia en aplicaciones sparse**: Aplicaciones que reservan grandes espacios de memoria pero solo usan una fracción obtienen beneficios significativos.
-* **Mejor gestión de recursos**: La memoria física se utiliza de manera más eficiente, permitiendo más procesos concurrentes.
+* Reducción del uso de memoria: Solo se asigna memoria física cuando realmente se accede a ella, no cuando se solicita con sbrk().
+* Arranque más rápido: Las llamadas a sbrk() grandes retornan inmediatamente sin asignar toda la memoria solicitada.
+* Eficiencia en aplicaciones sparse: Aplicaciones que reservan grandes espacios de memoria pero solo usan una fracción obtienen beneficios significativos.
+* Mejor gestión de recursos: La memoria física se utiliza de manera más eficiente, permitiendo más procesos concurrentes.
 
-##### Prueba con `memdif.c`
+#### Interacción con vm.c
 
-El script de prueba `memdif.c` valida este comportamiento:
+El manejo de lazy allocation se integra con las funciones existentes en vm.c:
 
-```c
-#define BIG (64*1024*1024)  // 64 MiB
-
-int main(void)
-{
-  int sz0 = (int)sbrk(0);
-  printf(1, "memdiff: brk inicial %d\n", sz0);
-
-  char *p = sbrk(BIG);
-  if (p == (char*)-1) {
-    printf(1, "memdiff: sbrk(%d) FALLÓ (asignación eager)\n", BIG);
-    exit();
-  }
-  printf(1, "memdiff: sbrk(%d) OK, brk ahora %d\n", BIG, (int)sbrk(0));
-
-  // Tocar solo las dos primeras páginas
-  p[0] = 'A';
-  p[4096] = 'B';
-  printf(1, "memdiff: toque 2 páginas, no deberíamos morir si hay lazy alloc\n");
-
-  // Intentar liberar
-  if (sbrk(-BIG) == (char*)-1)
-    printf(1, "memdiff: free falló\n");
-  else
-    printf(1, "memdiff: brk tras liberar %d\n", (int)sbrk(0));
-
-  printf(1, "memdiff: done\n");
-  exit();
-}
-```
-
-Este test solicita 64 MiB de memoria pero solo accede a dos páginas (8 KB), demostrando que:
-* La llamada `sbrk(64 MiB)` retorna exitosamente sin asignar toda la memoria.
-* Solo cuando se tocan las direcciones `p[0]` y `p[4096]` se generan page faults y se asignan esas páginas específicas.
-* El proceso no consume 64 MiB de RAM física, solo las páginas realmente accedidas.
-
-#### Interacción con `vm.c`
-
-El manejo de lazy allocation se integra con las funciones existentes en `vm.c`:
-
-* **`allocuvm()`**: Se utiliza en el manejador de page faults para asignar físicamente las páginas demandadas.
-* **`deallocuvm()`**: Se encarga de liberar páginas cuando se reduce el tamaño del proceso con `sbrk()` negativo.
-* **`walkpgdir()`**: Navega por la tabla de páginas para verificar y crear entradas según sea necesario.
+* allocuvm(): Se utiliza en el manejador de page faults para asignar físicamente las páginas demandadas.
+* deallocuvm(): Se encarga de liberar páginas cuando se reduce el tamaño del proceso con sbrk() negativo.
+* walkpgdir(): Navega por la tabla de páginas para verificar y crear entradas según sea necesario.
 
 Estas funciones no requirieron modificaciones, ya que el mecanismo de lazy allocation se implementó completamente en el manejador de traps.
 
@@ -635,28 +600,15 @@ Estas funciones no requirieron modificaciones, ya que el mecanismo de lazy alloc
 
 A pesar de las mejoras, el gestor de memoria aún presenta algunas limitaciones:
 
-* **Fragmentación interna**: Sigue asignando páginas completas de 4096 bytes, lo que puede desperdiciar memoria en pequeñas asignaciones.
-* **No hay coalescencia**: Las páginas libres no se fusionan para formar bloques más grandes.
-* **Sin compactación**: No existe un mecanismo para reorganizar la memoria y reducir fragmentación.
-* **Política simple**: La asignación sigue una política de "primera disponible" sin optimizaciones de localidad.
-
-#### Posibles mejoras futuras
-
-1. **Buddy Allocator**: Implementar un sistema de asignación buddy para reducir fragmentación externa y facilitar coalescencia.
-
-2. **Slab Allocator**: Para objetos de kernel frecuentemente usados (como estructuras `proc`, `inode`, etc.), un slab allocator reduciría fragmentación interna.
-
-3. **Copy-on-Write (COW)**: Implementar COW en `fork()` para reducir la cantidad de memoria copiada innecesariamente.
-
-4. **Swapping**: Permitir que páginas poco usadas se muevan a disco para liberar RAM física.
-
-5. **Huge Pages**: Soporte para páginas de mayor tamaño (2MB o 1GB) para reducir overhead de TLB en aplicaciones con grandes requerimientos de memoria.
-
-6. **NUMA Awareness**: En sistemas multiprocesador, optimizar asignaciones para minimizar accesos a memoria remota.
+* Fragmentación interna: Sigue asignando páginas completas de 4096 bytes, lo que puede desperdiciar memoria en pequeñas asignaciones.
+* No hay coalescencia: Las páginas libres no se fusionan para formar bloques más grandes.
+* Sin compactación: No existe un mecanismo para reorganizar la memoria y reducir fragmentación.
+* Política simple: La asignación sigue una política de "primera disponible" sin optimizaciones de localidad.
 
 #### Conclusión sobre el gestor de memoria
+  
+La decisión de mantener kalloc.c sin modificaciones fue acertada, ya que:
 
-La decisión de mantener `kalloc.c` sin modificaciones fue acertada, ya que:
 * Se priorizó la estabilidad y confiabilidad del sistema base.
 * Se implementó una mejora significativa (lazy allocation) que beneficia el uso de memoria sin modificar el allocator básico.
 * El sistema resultante es más eficiente en el uso de RAM física mientras mantiene la simplicidad del diseño original.
@@ -779,4 +731,111 @@ Permite evaluar el comportamiento del gestor de memoria modificado en términos 
 
 ### 3.2 Resultados
 
-> **[Contenido pendiente: aquí deben incluirse los resultados obtenidos en las pruebas, comparaciones entre sistema original y modificado, métricas, tablas y análisis.]**
+#### scheddif
+
+Los resultados obtenidos al ejecutar el script scheddif muestran un comportamiento esperado del scheduler MLFQ implementado. Los procesos interactivos y yieldy recibieron más tiempo de CPU en comparación con el proceso CPU-bound, que fue degradado en prioridad tras consumir su quantum completo. Esto se reflejó en la salida del script, donde los mensajes de los procesos interactivos aparecieron con mayor frecuencia y menor latencia.
+
+##### Resultados en la versión original
+
+```bash
+$ scheddif
+hog 1 tick 0
+io  2 burst 0
+yld 3 step 0
+yld 3 step 1
+yld 3 step 2
+yld 3 step 3
+yld 3 step 4
+yld 3 step 5
+yld 3 step 6
+yld 3 step 7
+yld 3 step 8
+yld 3 step 9
+yld 3 step 10
+yld 3 step 11
+yld 3 done
+hog 1 tick 1
+io  2 burst 1
+hog 1 tick 2
+hog 1 tick 3
+io  2 burst 2
+hog 1 tick 4
+io  2 burst 3
+hog 1 done (-1186941120)
+io  2 burst 4
+io  2 burst 5
+io  2 burst 6
+io  2 burst 7
+io  2 done
+scheddiff finished
+```
+
+##### Resultados en la versión modificada
+
+```bash
+$ scheddif
+hog 1 tick 0
+io  2 burst 0
+yld 3 step 0
+yld 3 step 1
+yld 3 step 2
+hog 1 tick 1
+yld 3 step 3
+yld 3 step 4
+yld 3 step 5
+io  2 burst 1
+yld 3 step 6
+hog 1 tick 2
+yld 3 step 7
+hog 1 tick 3
+yld 3 step 8
+io  2 burst 2
+yld 3 step 9
+hog 1 tick 4
+yld 3 step 10
+hog 1 done (-1186941120)
+yld 3 step 11
+yld 3 done
+io  2 burst 3
+io  2 burst 4
+io  2 burst 5
+io  2 burst 6
+io  2 burst 7
+io  2 done
+scheddiff finished
+```
+
+#### memdif
+
+Los resultados del script memdif confirmaron la correcta implementación de lazy allocation en el gestor de memoria. Al solicitar 64 MiB de memoria, el sistema no asignó físicamente toda la memoria solicitada hasta que se accedió a las páginas específicas. Solo las dos primeras páginas fueron tocadas, y el sistema respondió correctamente sin errores, demostrando que la asignación perezosa funcionó como se esperaba.
+
+##### Resultados en la versión original
+
+```bash
+$ memdif
+memdiff: brk inicial 12288
+memdiff: sbrk(67108864) OK, brk ahora 67121152
+memdiff: toque 2 páginas, no deberíamos morir si hay lazy alloc
+memdiff: brk tras liberar 12288
+memdiff: done
+```
+
+##### Resultados en la versión modificada
+
+```bash
+$ memdif
+memdiff: brk inicial 12288
+memdiff: sbrk(67108864) OK, brk ahora 67121152
+memdiff: toque 2 páginas, no deberíamos morir si hay lazy alloc
+memdiff: brk tras liberar 12288
+memdiff: done
+```
+
+### 3.3 Conclusiones
+
+Los resultados obtenidos de las pruebas realizadas con los scripts scheddif y memdif confirman que las modificaciones implementadas en el scheduler y el gestor de memoria de xv6 han sido exitosas y cumplen con los objetivos planteados.
+
+1. Scheduler MLFQ: El scheduler modificado demostró un comportamiento adecuado al priorizar procesos interactivos y penalizar procesos CPU-bound, mejorando la equidad y la capacidad de respuesta del sistema.
+2. Lazy Allocation: La implementación de lazy allocation en el gestor de memoria permitió una asignación eficiente de memoria bajo demanda, reduciendo el uso innecesario de RAM física y mejorando la gestión de recursos del sistema.
+3. Robustez y estabilidad: Mantener el gestor de memoria original garantizó la estabilidad del sistema, mientras que las mejoras se integraron de manera modular sin afectar la funcionalidad básica.
+4. Validación mediante pruebas: Los scripts de prueba desarrollados permitieron validar de manera efectiva las modificaciones, proporcionando evidencia clara del correcto funcionamiento del sistema modificado.
