@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="proyecto-final-OS" targetName="qemu" />
+      <config projectName="proyecto-final-OS" targetName="qemu-nox" />
+      <config projectName="proyecto-final-OS" targetName="qemu-nox-gdb" />
+      <config projectName="proyecto-final-OS" targetName="_kill" />
+      <config projectName="proyecto-final-OS" targetName="print" />
+      <config projectName="proyecto-final-OS" targetName="qemu-memfs" />
+      <config projectName="proyecto-final-OS" targetName="dist" />
+      <config projectName="proyecto-final-OS" targetName="_lazytests" />
+      <config projectName="proyecto-final-OS" targetName="_rm" />
+      <config projectName="proyecto-final-OS" targetName="qemu-gdb" />
+      <config projectName="proyecto-final-OS" targetName="_usertests" />
+      <config projectName="proyecto-final-OS" targetName="entryother" />
+      <config projectName="proyecto-final-OS" targetName="_ln" />
+      <config projectName="proyecto-final-OS" targetName="_init" />
+      <config projectName="proyecto-final-OS" targetName="_grep" />
+      <config projectName="proyecto-final-OS" targetName="kernelmemfs" />
+      <config projectName="proyecto-final-OS" targetName="mkfs" />
+      <config projectName="proyecto-final-OS" targetName="bochs" />
+      <config projectName="proyecto-final-OS" targetName="tar" />
+      <config projectName="proyecto-final-OS" targetName="_cat" />
+      <config projectName="proyecto-final-OS" targetName="kernel" />
+      <config projectName="proyecto-final-OS" targetName="_ls" />
+      <config projectName="proyecto-final-OS" targetName="_forktest" />
+      <config projectName="proyecto-final-OS" targetName="_stressfs" />
+      <config projectName="proyecto-final-OS" targetName="tags" />
+      <config projectName="proyecto-final-OS" targetName="_wc" />
+      <config projectName="proyecto-final-OS" targetName="bootblock" />
+      <config projectName="proyecto-final-OS" targetName="_echo" />
+      <config projectName="proyecto-final-OS" targetName="_zombie" />
+      <config projectName="proyecto-final-OS" targetName="initcode" />
+      <config projectName="proyecto-final-OS" targetName="_sh" />
+      <config projectName="proyecto-final-OS" targetName="README" />
+      <config projectName="proyecto-final-OS" targetName="dist-test" />
+      <config projectName="proyecto-final-OS" targetName="_mkdir" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4ef6405d-fb71-451d-b529-d054ee731759" name="Changes" comment="&quot;adaptando el proyecto para probar un caso de prueba&quot;" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="jdgv" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {}
+}]]></component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/juan-marin-19/proyecto-final-OS.git&quot;,
+    &quot;accountId&quot;: &quot;c131d42b-dea7-499a-9e06-d4b8ee5db1d9&quot;
+  }
+}</component>
+  <component name="MakefileLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="proyecto-final-OS" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="proyecto-final-OS" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2024" />
+    <option name="minorVersion" value="2.1" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="36XRH46SDtKF4Y5ouHymBvSTVwr" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "C:/Users/Hulk1/OneDrive/Escritorio/Nueva carpeta/proyecto-final-OS/Makefile",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "MakefileSettings",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Native Application.dist">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="README" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="README" CONFIG_NAME="README" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_cat" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_cat" CONFIG_NAME="_cat" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_echo" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_echo" CONFIG_NAME="_echo" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_forktest" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_forktest" CONFIG_NAME="_forktest" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_grep" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_grep" CONFIG_NAME="_grep" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_init" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_init" CONFIG_NAME="_init" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_kill" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_kill" CONFIG_NAME="_kill" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_lazytests" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_lazytests" CONFIG_NAME="_lazytests" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_ln" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_ln" CONFIG_NAME="_ln" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_ls" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_ls" CONFIG_NAME="_ls" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_mkdir" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_mkdir" CONFIG_NAME="_mkdir" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_rm" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_rm" CONFIG_NAME="_rm" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_sh" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_sh" CONFIG_NAME="_sh" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_stressfs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_stressfs" CONFIG_NAME="_stressfs" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_usertests" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_usertests" CONFIG_NAME="_usertests" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_wc" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_wc" CONFIG_NAME="_wc" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="_zombie" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="_zombie" CONFIG_NAME="_zombie" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bochs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="bochs" CONFIG_NAME="bochs" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bootblock" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="bootblock" CONFIG_NAME="bootblock" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="dist-test" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="dist-test" CONFIG_NAME="dist-test" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="dist" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="dist" CONFIG_NAME="dist" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="entryother" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="entryother" CONFIG_NAME="entryother" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="initcode" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="initcode" CONFIG_NAME="initcode" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="kernel" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="kernel" CONFIG_NAME="kernel" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="kernelmemfs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="kernelmemfs" CONFIG_NAME="kernelmemfs" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mkfs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="mkfs" CONFIG_NAME="mkfs" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="print" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="print" CONFIG_NAME="print" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-gdb" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="qemu-gdb" CONFIG_NAME="qemu-gdb" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-memfs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="qemu-memfs" CONFIG_NAME="qemu-memfs" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-nox-gdb" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="qemu-nox-gdb" CONFIG_NAME="qemu-nox-gdb" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-nox" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="qemu-nox" CONFIG_NAME="qemu-nox" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="qemu" CONFIG_NAME="qemu" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="tags" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="tags" CONFIG_NAME="tags" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="tar" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proyecto-final-OS" TARGET_NAME="tar" CONFIG_NAME="tar" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Native Application.dist" />
+      <item itemvalue="Native Application.dist-test" />
+      <item itemvalue="Native Application._cat" />
+      <item itemvalue="Native Application._echo" />
+      <item itemvalue="Native Application._forktest" />
+      <item itemvalue="Native Application._grep" />
+      <item itemvalue="Native Application._init" />
+      <item itemvalue="Native Application._kill" />
+      <item itemvalue="Native Application._lazytests" />
+      <item itemvalue="Native Application._ln" />
+      <item itemvalue="Native Application._ls" />
+      <item itemvalue="Native Application._mkdir" />
+      <item itemvalue="Native Application._rm" />
+      <item itemvalue="Native Application._sh" />
+      <item itemvalue="Native Application._stressfs" />
+      <item itemvalue="Native Application._usertests" />
+      <item itemvalue="Native Application._wc" />
+      <item itemvalue="Native Application._zombie" />
+      <item itemvalue="Native Application.bochs" />
+      <item itemvalue="Native Application.bootblock" />
+      <item itemvalue="Native Application.entryother" />
+      <item itemvalue="Native Application.initcode" />
+      <item itemvalue="Native Application.kernel" />
+      <item itemvalue="Native Application.kernelmemfs" />
+      <item itemvalue="Native Application.mkfs" />
+      <item itemvalue="Native Application.print" />
+      <item itemvalue="Native Application.qemu" />
+      <item itemvalue="Native Application.qemu-gdb" />
+      <item itemvalue="Native Application.qemu-memfs" />
+      <item itemvalue="Native Application.qemu-nox" />
+      <item itemvalue="Native Application.qemu-nox-gdb" />
+      <item itemvalue="Native Application.README" />
+      <item itemvalue="Native Application.tags" />
+      <item itemvalue="Native Application.tar" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4ef6405d-fb71-451d-b529-d054ee731759" name="Changes" comment="" />
+      <created>1765150839068</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1765150839068</updated>
+      <workItem from="1765150840313" duration="2738000" />
+      <workItem from="1765162073418" duration="578000" />
+    </task>
+    <task id="LOCAL-00001" summary="&quot;adaptando el proyecto para probar un caso de prueba&quot;">
+      <option name="closed" value="true" />
+      <created>1765151501528</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1765151501528</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="&quot;adaptando el proyecto para probar un caso de prueba&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;adaptando el proyecto para probar un caso de prueba&quot;" />
+  </component>
+</project>

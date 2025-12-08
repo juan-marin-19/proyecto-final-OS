@@ -1,0 +1,20 @@
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"BackendCodeEditorMiscSettings\">\r\n    <option name=\"/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue\" value=\"false\" type=\"bool\" />\r\n    <option name=\"/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue\" value=\"true\" type=\"bool\" />\r\n    <option name=\"/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue\" value=\"true\" type=\"bool\" />\r\n  </component>\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"MakefileSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <MakefileProjectSettings>\r\n        <option name=\"buildTarget\" value=\"xv6.img\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"version\" value=\"2\" />\r\n      </MakefileProjectSettings>\r\n    </option>\r\n  </component>\r\n  <component name=\"MakefileWorkspace\" PROJECT_DIR=\"$PROJECT_DIR$\" />\r\n</project>
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision fd09964fefc898216df4397f45c0140d3996441f)
++++ b/.idea/misc.xml	(date 1765162083182)
+@@ -11,6 +11,11 @@
+       <MakefileProjectSettings>
+         <option name="buildTarget" value="xv6.img" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
++        <option name="modules">
++          <set>
++            <option value="$PROJECT_DIR$" />
++          </set>
++        </option>
+         <option name="version" value="2" />
+       </MakefileProjectSettings>
+     </option>
