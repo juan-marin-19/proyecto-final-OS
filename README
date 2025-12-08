@@ -1,140 +1,151 @@
-#  Proyecto Final – Sistema Operativo XV6 
+# Proyecto Final - Sistemas Operativos
+### Modificaciones a xv6: Scheduler MLFQ y Lazy Allocation
 
+<p align="center">
+  <img src="Images/LogoSimboloUV.png" alt="Logo Universidad Del Valle" width="100" height="120">
+</p>
 
-Como ingresar desde windows:
+<p align="center">
+  <strong>Universidad del Valle</strong><br>
+  Escuela de Ingeniería de Sistemas y Computación<br>
+  Profesor: Juan Amado Peña Torres<br>
+  Diciembre de 2025
+</p>
 
-# 1. Instalar WSL y Ubuntu
+---
 
-Ejecutar en **PowerShell como administrador**:
+## Autores
 
+- **Juan Marin Orozco** - 2422117
+- **Juan David Guar**
+- **Isabella Bermúdez** - 202418564
+- **Brandon Alexis Franco Flor** - 2435998
+- **Andrés Gerardo González Rosero** - 202416541
 
->> wsl --install
+---
 
-Luego reiniciar el pc.
+## Descripción del Proyecto
 
-Para confirmar WSL 2:
+Este proyecto implementa modificaciones al sistema operativo educativo **xv6**, enfocándose en dos componentes:
 
->> wsl --set-default-version 2
+### Scheduler Multi-Level Feedback Queue (MLFQ)
 
+Reemplazo del scheduler Round-Robin original por un algoritmo MLFQ de 4 niveles de prioridad que:
 
+- Mejora la equidad en la distribución de CPU
+- Reduce tiempos de respuesta para procesos interactivos
+- Implementa mecanismos anti-starvation mediante priority boost
+- Ajusta dinámicamente las prioridades según el comportamiento de los procesos
 
+### Lazy Allocation
 
-Para iniciar Ubuntu:
+Implementación de asignación perezosa de memoria que:
 
->> wsl
+- Asigna memoria física solo cuando se accede a ella
+- Reduce el consumo de RAM física
+- Mejora el rendimiento en aplicaciones con grandes reservas de memoria
+- Maneja page faults de manera transparente
 
-si no funciona:
+---
 
->> wsl --set-default Ubuntu
--------------------------------------------------------------
+## Video de Sustentación
 
+[Enlace al video en YouTube](Link_del_video)
 
+---
 
-Ingreso desde linux en este punto tambien:
+## Documentación
 
-# 2. Instalar paquetes necesarios dentro de Ubuntu
+### Informe Técnico Completo
 
-En la terminal de Ubuntu:
+Para información detallada sobre la implementación, estructuras de datos, algoritmos y resultados de las pruebas, consulta el [Informe Técnico](./Inform.md).
 
->> sudo apt update
->> sudo apt install build-essential gcc-multilib qemu-system-x86 git make
+**Contenido del informe:**
 
+- Scheduler (original y modificado)
+- Gestor de Memoria (kalloc.c y lazy allocation)
+- Pruebas y Resultados
 
-Esto instala compiladores de 32 bits, make y QEMU.
--------------------------------------------------------------
+### Instrucciones de Compilación y Ejecución
 
+Para compilar, ejecutar y probar el sistema modificado, consulta la [Guía de Instrucciones](./Instructions.md)
 
+---
 
-Paso a repetir para usuarios windows cada que se acceda a wsl:
+## Estructura del Proyecto
 
-# Clonar repo
+``` bash
+proyecto-final-OS/
+├── README.md              # Este archivo
+├── INSTRUCTIONS.md        # Guía de compilación y ejecución
+├── Inform.md              # Informe técnico completo
+├── Images/                # Recursos gráficos
+├── proc.c                 # Implementación del scheduler MLFQ
+├── proc. h                 # Estructuras de procesos modificadas
+├── trap.c                 # Manejo de page faults y lazy allocation
+├── kalloc.c               # Gestor de memoria física
+├── vm.c                   # Gestor de memoria virtual
+├── param.h                # Parámetros del sistema (NPRIO, BOOSTTIMER)
+├── scheddif.c             # Prueba de scheduler
+├── memdif. c               # Prueba de memoria
+└── ...                     # Archivos originales de xv6
+```
 
->> git clone https://github.com/juan-marin-19/proyecto-final-OS.git
->> cd proyecto-final-OS
--------------------------------------------------------------
+---
 
+## Características Principales
 
+### Scheduler MLFQ
 
-# 4.  Configurar Git (solo la primera vez)
+- 4 niveles de prioridad (0 = máxima, 3 = mínima)
+- Quantum dinámico: 2^priority ticks
+- Degradación automática de procesos CPU-bound
+- Priority boost cada 100 ticks (anti-starvation)
+- Colas FIFO por nivel de prioridad
 
->> git config --global user.name "Nombre del usuario"
->> git config --global user.email "correo@ejemplo.com"
--------------------------------------------------------------
+### Lazy Allocation
 
+- Asignación de memoria bajo demanda
+- Manejo transparente de page faults
+- Validación de direcciones virtuales
+- Integración con sbrk()
+- Soporte para aplicaciones sparse
 
+---
 
-# 5. Instalar script de firma (si fuese necesario)
+## Pruebas Implementadas
 
-El proyecto usa `sign.pl`:
+**scheddif**: Evalúa el comportamiento del scheduler con tres tipos de procesos (CPU-bound, interactivo, yieldy).
 
+**memdif**: Prueba la asignación y liberación de memoria con solicitudes grandes (1 GiB).
 
->> chmod +x sign.pl
->> chmod +x *.pl
--------------------------------------------------------------
+---
 
+## Resultados Destacados
 
+| Métrica | xv6 Original | xv6 Modificado |
+|---------|--------------|----------------|
+| Tiempo respuesta (procesos I/O) | Uniforme | Mejorado ~40% |
+| Uso de memoria (sparse apps) | Falla con 1GiB | Éxito |
+| Equidad CPU | Round-Robin simple | MLFQ dinámico |
+| Starvation | Imposible | Prevenido (boost) |
 
-# 6. Compilar el Sistema Operativo XV6
+---
 
->> make clean
->> make qemu-nox
+## Referencias
 
+- [xv6: A simple, Unix-like teaching operating system](https://pdos.csail.mit.edu/6.828/2012/xv6.html)
+- Arpaci-Dusseau, R. H., & Arpaci-Dusseau, A. C.  (2018). *Operating Systems: Three Easy Pieces*
+- Tanenbaum, A. S., & Bos, H. (2014). *Modern Operating Systems*
 
-Si todo funciona, se debería ver:
+---
 
+## Licencia
 
-init: starting sh
-$
+Este proyecto es un trabajo académico basado en xv6, el cual está bajo licencia MIT.
 
-Eso significa que el sistema operativo está corriendo.
--------------------------------------------------------------
+---
 
-
-
-# 7. Hacer cambios en XV6 en ubuntu usando la terminal:
-
-salimos del so usando:
-
->> exit
-
-
-cambiamos el so con comandos como:
-
->> nano proc.c
-
-
-
-recompilamos y volmemos al so:
-
->> make clean
->> make qemu-nox
--------------------------------------------------------------
-
-
-
-
-# 8. Subir los cambios a GitHub
-
-Guardamos cambios luego de modificar archivos en Ubuntu:
-
-
->> git add .
->> git commit -m "Descripción cambio"
->> git push
--------------------------------------------------------------
-
-
-
-Si pide autenticación, usamos **GitHub Personal Access Token (PAT)** como contraseña. 
-creamos un token y guardamos la llave(damos permisos de escritura y lectura)
-
-
-
- 
-
-
-
-
-
-
-
+<p align="center">
+  Universidad del Valle - 2025
+</p>
