@@ -5,7 +5,15 @@
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
   </component>
-  <component name="MakefileWorkspace">
-    <contentRoot DIR="$PROJECT_DIR$" />
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MakefileSettings">
+    <option name="linkedExternalProjectsSettings">
+      <MakefileProjectSettings>
+        <option name="buildTarget" value="xv6.img" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="version" value="2" />
+      </MakefileProjectSettings>
+    </option>
   </component>
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
 </project>
