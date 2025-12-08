@@ -133,7 +133,7 @@ void scheduler(void) {
   * exit().
 * Luego retorna al scheduler y continúa desde el siguiente proceso.
 
-## 1.2 Scheduler Modificado
+### 1.2 Scheduler Modificado
 
 #### Descripción general
 
@@ -504,11 +504,11 @@ Libera una página física, validando la dirección, llenándola con 1s para det
 * No realiza coalescencia.
 * No hay política de asignación más allá de “pop de la freelist”, es decir, no reduce la fragmentación ni optimiza el uso de memoria.
 
-## 2.2 Gestor de Memoria Modificado
+### 2.2 Gestor de Memoria Modificado
 
-### Análisis del código actual
+#### Análisis del código actual
 
-#### Estado de `kalloc.c`
+##### Estado de `kalloc.c`
 
 El archivo `kalloc.c` se mantiene **sin modificaciones** respecto al sistema original de xv6. Conserva la implementación basada en una lista enlazada de páginas libres (free list) de 4096 bytes, con las funciones `kinit1()`, `kinit2()`, `kfree()` y `kalloc()` operando de la misma manera que en el xv6 original.
 
@@ -519,15 +519,16 @@ El archivo `kalloc.c` se mantiene **sin modificaciones** respecto al sistema ori
 * **Compatibilidad**: Mantener `kalloc.c` sin cambios garantiza compatibilidad con el resto del kernel que depende de su interfaz.
 * **Enfoque en scheduler**: El objetivo principal del proyecto era modificar el scheduler, por lo que se priorizó la estabilidad del gestor de memoria básico.
 
-### Implementación de Lazy Allocation
+#### Implementación de Lazy Allocation
 
 Aunque `kalloc.c` no fue modificado, **sí se implementó una mejora significativa en el gestor de memoria virtual** mediante **lazy allocation** (asignación perezosa) de páginas en el manejador de page faults (`trap.c`).
 
-#### Lazy Allocation en `trap.c`
+##### Lazy Allocation en `trap.c`
 
 Se agregó un manejador específico para page faults (`T_PGFLT`) que implementa asignación de memoria bajo demanda:
 
 ```c
+// En trap.c, dentro del switch(tf->trapno):
 case T_PGFLT:
 {
   // 1. Obtener la dirección que causó el fallo
@@ -559,7 +560,7 @@ case T_PGFLT:
 }
 ```
 
-#### Funcionamiento de Lazy Allocation
+##### Funcionamiento de Lazy Allocation
 
 1. **Detección del page fault**: Cuando un proceso intenta acceder a una dirección de memoria que no tiene una página física asignada, el hardware genera una excepción de page fault (trap número `T_PGFLT`).
 
@@ -573,14 +574,14 @@ case T_PGFLT:
 
 6. **Continuación transparente**: Si la asignación es exitosa, el proceso continúa su ejecución desde donde quedó, sin que el código de usuario note la diferencia.
 
-#### Ventajas de Lazy Allocation
+##### Ventajas de Lazy Allocation
 
 * **Reducción del uso de memoria**: Solo se asigna memoria física cuando realmente se accede a ella, no cuando se solicita con `sbrk()`.
 * **Arranque más rápido**: Las llamadas a `sbrk()` grandes retornan inmediatamente sin asignar toda la memoria solicitada.
 * **Eficiencia en aplicaciones sparse**: Aplicaciones que reservan grandes espacios de memoria pero solo usan una fracción obtienen beneficios significativos.
 * **Mejor gestión de recursos**: La memoria física se utiliza de manera más eficiente, permitiendo más procesos concurrentes.
 
-#### Prueba con `memdif.c`
+##### Prueba con `memdif.c`
 
 El script de prueba `memdif.c` valida este comportamiento:
 
@@ -620,7 +621,7 @@ Este test solicita 64 MiB de memoria pero solo accede a dos páginas (8 KB), dem
 * Solo cuando se tocan las direcciones `p[0]` y `p[4096]` se generan page faults y se asignan esas páginas específicas.
 * El proceso no consume 64 MiB de RAM física, solo las páginas realmente accedidas.
 
-### Interacción con `vm.c`
+#### Interacción con `vm.c`
 
 El manejo de lazy allocation se integra con las funciones existentes en `vm.c`:
 
@@ -630,7 +631,7 @@ El manejo de lazy allocation se integra con las funciones existentes en `vm.c`:
 
 Estas funciones no requirieron modificaciones, ya que el mecanismo de lazy allocation se implementó completamente en el manejador de traps.
 
-### Limitaciones del sistema modificado
+#### Limitaciones del sistema modificado
 
 A pesar de las mejoras, el gestor de memoria aún presenta algunas limitaciones:
 
@@ -639,7 +640,7 @@ A pesar de las mejoras, el gestor de memoria aún presenta algunas limitaciones:
 * **Sin compactación**: No existe un mecanismo para reorganizar la memoria y reducir fragmentación.
 * **Política simple**: La asignación sigue una política de "primera disponible" sin optimizaciones de localidad.
 
-### Posibles mejoras futuras
+#### Posibles mejoras futuras
 
 1. **Buddy Allocator**: Implementar un sistema de asignación buddy para reducir fragmentación externa y facilitar coalescencia.
 
@@ -653,7 +654,7 @@ A pesar de las mejoras, el gestor de memoria aún presenta algunas limitaciones:
 
 6. **NUMA Awareness**: En sistemas multiprocesador, optimizar asignaciones para minimizar accesos a memoria remota.
 
-### Conclusión sobre el gestor de memoria
+#### Conclusión sobre el gestor de memoria
 
 La decisión de mantener `kalloc.c` sin modificaciones fue acertada, ya que:
 * Se priorizó la estabilidad y confiabilidad del sistema base.
