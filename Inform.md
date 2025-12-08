@@ -12,7 +12,7 @@ Profesor: Jefferson Amado Peña Torres
 Autores:
 
 * 2422117 Juan Marin Orozco
-* Juan David Guar
+* 2341909 Juan David Guar
 * 2418564 Isabella Bermúdez
 * 2435998 Brandon Alexis Franco Flor
 * 2416541 González Rosero Andrés Gerardo
