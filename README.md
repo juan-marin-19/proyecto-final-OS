@@ -17,7 +17,7 @@
 ## Autores
 
 - **Juan Marin Orozco** - 2422117
-- **Juan David Guar**
+- **Juan David Guar** - 2341909
 - **Isabella Bermúdez** - 2418564
 - **Brandon Alexis Franco Flor** - 2435998
 - **Andrés Gerardo González Rosero** - 2416541
@@ -149,5 +149,6 @@ Este proyecto es un trabajo académico basado en xv6, el cual está bajo licenci
 <p align="center">
   Universidad del Valle - 2025
 </p>
+
 
 
