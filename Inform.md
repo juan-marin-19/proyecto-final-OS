@@ -7,7 +7,7 @@ Escuela de Ingeniería de Sistemas y Computación
 <img src="Images/LogoSimboloUV.png" alt="LogoSimbolo Universidad Del Valle" width="100" height="120">
 </center>
 <center>
-Profesor Jefferson Amado Peña Torres
+Profesor: Jefferson Amado Peña Torres
 </center>
 Autores:
 
