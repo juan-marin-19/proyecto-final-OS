@@ -113,6 +113,7 @@ struct proc*    myproc();
 void            pinit(void);
 void            procdump(void);
 void            scheduler(void) __attribute__((noreturn));
+void            priority_boost(void);   //delara prioirity_boost(void) en defs.h para que trap.c pueda usarla
 void            sched(void);
 void            setproc(struct proc*);
 void            sleep(void*, struct spinlock*);

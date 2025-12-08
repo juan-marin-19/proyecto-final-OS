@@ -10,6 +10,8 @@
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
+  struct proc *queue_first[NPRIO]; //Array donde cada posición guarda el primer proceso de la cola de esa prioridad
+  struct proc *queue_last[NPRIO];  //Array donde se guarda el puntero al ultimo proceso de cada cola de prioridad
 } ptable;
 
 static struct proc *initproc;
@@ -20,10 +22,52 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+//Encola un proceso en su cola de prioridad actual.
+//Si la cola esta vacía, se añade al inicio.
+void
+enqueue(struct proc *p)
+{
+  int prio = p->priority;                 //halla la prioridad del proceso recibido
+  if(ptable.queue_last[prio] != 0)          //si la cola no esta vacía, cambia el puntero del ultimo proceso para que apunte al proceso por encolar
+    ptable.queue_last[prio]->next_proc = p;
+  else
+    ptable.queue_first[prio] = p;           //si la cola esta vacía, el nuevo proceso sera al que apunte el puntero del primer proceso
+
+  p->next_proc = 0;                         //como el proceso se añade al final de la cola, se le pone null a su campo next_proc. 
+  ptable.queue_last[prio] = p;             //actualiza queue_last[] para esta cola de prioridad, con el proceso recibido.
+  p->state = RUNNABLE;          
+}
+
+//Desencola y devuelve el primer proceso de la cola del nivel o prioridad recibido
+//retorna 0 si la cola esta vacía
+struct proc* dequeue(int priority)
+{
+    struct proc *p = ptable.queue_first[priority]; //toma el primer proceso de la cola actual
+
+    if(p == 0)
+        return 0;
+
+     ptable.queue_first[priority] = p->next_proc;   //Actualiza el valor de queue_first por el proceso al que apuntaba el primer proceso 
+
+    if(ptable.queue_last[priority] == p)         //si el proceso por desencolar es el unico en la cola
+        ptable.queue_last[priority] = 0;        //pone en null el valor de queue_last
+    
+
+    p->next_proc = 0;                   //se pone en null el campo next_proc del proceso desencolado
+    return p;
+
+}
+
 void
 pinit(void)
 {
   initlock(&ptable.lock, "ptable");
+  // inicializa todas las colas vacías, evita que haya colas basuras al inicio
+  for(int i = 0; i < NPRIO; i++) {
+    ptable.queue_first[i] = 0;
+    ptable.queue_last[i] = 0;
+  }
+
 }
 
 // Must be called with interrupts disabled
@@ -88,6 +132,8 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = 0;           // Prioridad maxima al nacer
+  p->ticks_running = 0;      // quantum limpio
 
   release(&ptable.lock);
 
@@ -148,8 +194,7 @@ userinit(void)
   // because the assignment might not be atomic.
   acquire(&ptable.lock);
 
-  p->state = RUNNABLE;
-
+  enqueue(p);            // Proceso listo para ejecutar, se encola. 
   release(&ptable.lock);
 }
 
@@ -214,7 +259,7 @@ fork(void)
 
   acquire(&ptable.lock);
 
-  np->state = RUNNABLE;
+  enqueue(np);     //proceso listo para ejecutar, se pone en la cola.
 
   release(&ptable.lock);
 
@@ -322,37 +367,81 @@ wait(void)
 void
 scheduler(void)
 {
-  struct proc *p;
-  struct cpu *c = mycpu();
-  c->proc = 0;
-  
-  for(;;){
+  struct proc *p;    
+  struct cpu *c = mycpu(); //se obtiene la estructura cpu 
+  c->proc = 0;             //se marca que la cpu no tiene proceso en ejecucion todavia
+
+  for(;;){    //buque infinito del scheduler, nunca retorna
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
+
+    for(uint level = 0; level < NPRIO; level++){          //recorre las colas de prioridades desde la prioridad mayor (0) a la menor 
+      p = dequeue(level);                                 //saca el primer proceso de la cola                                                 
+      if(p == 0)                 //si la cola esta vacía salta hasta la siguiente prioridad
         continue;
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
+      c->proc = p;              //el cpu agrega este proceso como su proceso actual
+      switchuvm(p);             //cambia el directorio de memoria a la del proceso p             
+      p->ticks_running = 0;     //reinicia el quantum del proceso
+      p->state = RUNNING;       //pone el proceso en estado ejecutandose
+
+      swtch(&(c->scheduler), p->context);      //hace el cambio de contexto
+      switchkvm();                             
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
-      c->proc = 0;
+      c->proc = 0;                           //cpu deja de ejecutar el proceso
+      break;                                 //se pone un break porque debe ejecutar siempre primero la cola de mayor prioridad
     }
     release(&ptable.lock);
-
   }
+}
+
+
+// Reinicia en 0 las prioridades de los procesos, metodo de anti_starvation
+void
+priority_boost(void)
+{
+  struct proc *p, *last = 0;
+  uint first = 0;
+
+  acquire(&ptable.lock);
+
+  //coloca la prioridad de todos los procesos en la prioridad máxima
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    p->priority = 0;
+
+  // Buscar el índice de la primera cola no vacía
+  while (first < NPRIO && ptable.queue_first[first] == 0)
+    first++;
+
+ //si se encontro alguna cola no vacía
+  if (first < NPRIO) {
+    ptable.queue_first[0] = ptable.queue_first[first]; //se fija la cabeza de la cola con prioridad maximo al primer elemento de la primera cola no vacía
+    last = ptable.queue_last[first]; //last apunta al ultimo elemento de la cola no vacía
+
+    for (uint i = first + 1; i < NPRIO; i++) {     //recorre todas las colas con índice mayor al de la primera cola no vacía encontrada
+      if (ptable.queue_first[i]) {                   //si la cola no está vacía
+        last->next_proc = ptable.queue_first[i];     //enlaza el puntero del ultimo elemento de la primera cola no vacía con el inicio de la cola i
+        last = ptable.queue_last[i];                //acutaliza last con el ultimo elemento de la cola i
+      }
+    }
+    ptable.queue_last[0] = last;                   //despues de concatenar, queue_last se actualiza para apuntar al final de la lista
+  }
+
+  // Vaciar las demás colas
+  for (uint i = 1; i < NPRIO; i++) {
+    ptable.queue_first[i] = ptable.queue_last[i] = 0;
+  }
+
+  release(&ptable.lock);
 }
 
 // Enter scheduler.  Must hold only ptable.lock
@@ -381,13 +470,22 @@ sched(void)
   mycpu()->intena = intena;
 }
 
-// Give up the CPU for one scheduling round.
+// Give up the CPU for one scheduling round. 
 void
 yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
-  myproc()->state = RUNNABLE;
-  sched();
+  struct proc *p = myproc();
+
+  if (p->priority < NPRIO -1)  //si un proceso consumio su quantum completo (llama a yield), se baja su prioridad, si esta en la mas baja no se hace nada
+    p->priority++;
+
+
+  p->ticks_running = 0;  //reinicia el quantum del proceso
+  
+  enqueue(p);  //reencola el proceso en una cola
+
+ sched();
   release(&ptable.lock);
 }
 
@@ -460,8 +558,10 @@ wakeup1(void *chan)
   struct proc *p;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
-      p->state = RUNNABLE;
+    if(p->state == SLEEPING && p->chan == chan){
+        p->state = RUNNABLE;
+        enqueue(p); //se encola el proceso
+    }
 }
 
 // Wake up all processes sleeping on chan.
@@ -486,8 +586,10 @@ kill(int pid)
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
-      if(p->state == SLEEPING)
+      if(p->state == SLEEPING){
         p->state = RUNNABLE;
+        enqueue(p); 
+      }
       release(&ptable.lock);
       return 0;
     }

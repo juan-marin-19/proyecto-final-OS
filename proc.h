@@ -49,6 +49,9 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  uint priority;               //Prioridad actual del proceso dentro del MLFQ
+  uint ticks_running;          //cantidad de ticks(interrumpciones del timer) que el procesero ha usado en su quantum actual
+  struct proc *next_proc;      //puntero del siguiente proceso en la cola actual
 };
 
 // Process memory is laid out contiguously, low addresses first:
