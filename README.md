@@ -8,7 +8,7 @@
 <p align="center">
   <strong>Universidad del Valle</strong><br>
   Escuela de Ingeniería de Sistemas y Computación<br>
-  Profesor: Juan Amado Peña Torres<br>
+  Profesor: Jefferson Amado Peña Torres<br>
   Diciembre de 2025
 </p>
 
@@ -149,3 +149,4 @@ Este proyecto es un trabajo académico basado en xv6, el cual está bajo licenci
 <p align="center">
   Universidad del Valle - 2025
 </p>
+
